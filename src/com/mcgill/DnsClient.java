@@ -1,11 +1,14 @@
 package com.mcgill;
 
+import java.util.Random;
+
 public class DnsClient {
     public static void main(String[] args) {
         String argIp = "";
         String argAddress = "";
         int splittedIntIp[] = new int[4];
         byte[] address = new byte[4];
+        byte[] ID = new byte[2];
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == '@') {
@@ -29,6 +32,11 @@ public class DnsClient {
         address[1] = (byte) splittedIntIp[1];
         address[2] = (byte) splittedIntIp[2];
         address[3] = (byte) splittedIntIp[3];
+
+        System.out.println(splittedStringIp[0]);
+
+        Random random = new Random();
+        random.nextBytes(ID);
 
     }
 }
