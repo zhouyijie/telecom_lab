@@ -1,5 +1,6 @@
 package com.mcgill;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class DnsClient {
@@ -14,7 +15,7 @@ public class DnsClient {
             if (args[i].charAt(0) == '@') {
                 argIp = args[i];
                 argIp = argIp.substring(1);
-                argAddress = args[i++];
+                argAddress = args[i+1];
             }
         }
 
@@ -33,10 +34,12 @@ public class DnsClient {
         address[2] = (byte) splittedIntIp[2];
         address[3] = (byte) splittedIntIp[3];
 
-        System.out.println(splittedStringIp[0]);
-
         Random random = new Random();
         random.nextBytes(ID);
+
+        System.out.println("sending request for "  +argAddress+ "\n"
+                + "Server: " + Arrays.toString(splittedStringIp));
+
 
     }
 }
