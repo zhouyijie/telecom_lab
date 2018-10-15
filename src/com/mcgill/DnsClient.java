@@ -10,7 +10,7 @@ import java.util.Random;
 public class DnsClient {
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         String argIp = "";
         String argAddress = "";
         String argType = "A";
@@ -125,6 +125,11 @@ public class DnsClient {
         System.out.println("");
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
+        
+        dnsHeader.readHeader(receiveData);
+        
+        
+        
         
     }
 
