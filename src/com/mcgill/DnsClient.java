@@ -1,10 +1,16 @@
 package com.mcgill;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Random;
 
 public class DnsClient {
-    public static void main(String[] args) {
+    private static int port;
+
+	public static void main(String[] args) throws IOException {
         String argIp = "";
         String argAddress = "";
         int splittedIntIp[] = new int[4];
@@ -42,6 +48,40 @@ public class DnsClient {
 
         System.out.println("sending request for "  +argAddress+ "\n"
                 + "Server: " + Arrays.toString(splittedStringIp));
+        
+        /*
+         sending dns request
+         */
+        InetAddress server = InetAddress.getByAddress(address);
+
+        DatagramSocket socket = new DatagramSocket();
+
+        
+		byte[] sendData = new byte[] {1};
+		DatagramPacket dnsReqPacket = new DatagramPacket(sendData ,sendData.length,server,port);
+
+        long startTime = System.currentTimeMillis();
+
+        socket.send(dnsReqPacket);
+        
+        /*
+         * waiting for dns response
+         * 
+         */
+        
+
+        byte[] receiveData = new byte[] {1};
+		DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
+
+        socket.receive(packet);
+
+        long endTime   = System.currentTimeMillis();
+
+        long totalTime = endTime - startTime;
+
+        System.out.println("");
+
+        System.out.println("Received data: " + Arrays.toString(receiveData));
         
         
 
