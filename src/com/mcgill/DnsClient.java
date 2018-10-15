@@ -81,6 +81,7 @@ public class DnsClient {
         //random.nextBytes(ID)
         
         
+        
         DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short)randomID.nextInt(), (byte)0, (byte)0, (byte)0, (byte)0, (byte)1, (byte)0, (byte)0, (byte)0, (short)1, (short)0, (short)0, (short)0);
 
 
@@ -91,8 +92,9 @@ public class DnsClient {
                 + "Server: " + Arrays.toString(splittedStringIp));
         
         byte[] sendData = null;
-        DNS_Question dnsQuestion = new DNS_Question(argAddress,"","");
-        sendData = merge(dnsHeader.getHeader(),DNS_Question.getQuestion());
+        DNS_Question dnsQuestion = new DNS_Question(argAddress,argType);
+        sendData = merge(dnsHeader.getHeader(),dnsQuestion.getSendData());
+        
         
         /*
          sending dns request
@@ -110,7 +112,7 @@ public class DnsClient {
 
         long startTime = System.currentTimeMillis();
 
-//        socket.send(dnsReqPacket);
+        socket.send(dnsReqPacket);
 
         /*
          * waiting for dns response
@@ -118,7 +120,7 @@ public class DnsClient {
          */
 
 
-        byte[] receiveData = new byte[]{1};
+        byte[] receiveData = new byte[1024];
         DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 
         socket.receive(packet);

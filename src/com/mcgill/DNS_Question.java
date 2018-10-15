@@ -10,7 +10,7 @@ public class DNS_Question {
     byte[] dataSent = new byte[1024];
     int count = 0;
 
-    public DNS_Question(String address, String qType, String qClass) {
+    public DNS_Question(String address, String qType) {
         this.address = address;
         this.qType = qType;
         this.qClass = qClass;
