@@ -19,13 +19,13 @@ public class DNS_Question {
     public byte[] getSendData() {
 
         //QName start
-        String s[] = address.split("\\.");
+        String splittedAddress[] = address.split("\\.");
 
-        for (int i = 0; i < s.length; i++) {
-            dataSent[count++] = ((byte) s[i].length());
+        for (int i = 0; i < splittedAddress.length; i++) {
+            dataSent[count++] = ((byte) splittedAddress[i].length());
 
-            for (int j = 0; j < s[i].length(); j++) {
-                dataSent[count++] = (byte) s[i].charAt(j);
+            for (int j = 0; j < splittedAddress[i].length(); j++) {
+                dataSent[count++] = (byte) splittedAddress[i].charAt(j);
             }
         }
         dataSent[count++] = (byte) 0;
@@ -49,6 +49,5 @@ public class DNS_Question {
         dataSent[count++] = (byte) 1;
 
         return Arrays.copyOf(dataSent, count);
-
     }
 }

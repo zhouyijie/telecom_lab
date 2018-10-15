@@ -23,11 +23,14 @@ public class DnsClient {
         //short ID = new byte[2];
 
         for (int i = 0; i < args.length; i++) {
+
             if (args[i].charAt(0) == '@') {
                 argIp = args[i];
                 argIp = argIp.substring(1);
                 argAddress = args[i + 1];
+
             } else if (args[i].charAt(0) == '-') {
+
                 if (args[i].charAt(1) == 't') {
                     argTimeout = Integer.parseInt(args[i + 1]);
 
@@ -36,12 +39,13 @@ public class DnsClient {
 
                 } else if (args[i].charAt(1) == 'p') {
                     argPort = Integer.parseInt(args[i + 1]);
+
                 } else if (args[i].charAt(1) == 'm') {
                     argType = "MX";
+
                 } else if (args[i].charAt(1) == 'n') {
                     argType = "NS";
                 }
-
             }
         }
 
@@ -59,7 +63,7 @@ public class DnsClient {
         address[1] = (byte) splittedIntIp[1];
         address[2] = (byte) splittedIntIp[2];
         address[3] = (byte) splittedIntIp[3];
-        
+
         /*
          * packet headers
          * ID random
@@ -72,29 +76,21 @@ public class DnsClient {
          * Z 0
          * RCODE 0 (no error condition)
          * QD 1
-         * AN 0 
+         * AN 0
          * NS 0 (ignored)
          * AR 0
          */
         //generate random ID
         Random randomID = new Random(Short.MAX_VALUE + 1);
-        //random.nextBytes(ID)
-        
-        
-        
-        DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short)randomID.nextInt(), (byte)0, (byte)0, (byte)0, (byte)0, (byte)1, (byte)0, (byte)0, (byte)0, (short)1, (short)0, (short)0, (short)0);
 
-
-
-    
+        DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short) randomID.nextInt(), (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 1, (byte) 0, (byte) 0, (byte) 0, (short) 1, (short) 0, (short) 0, (short) 0);
 
         System.out.println("sending request for " + argAddress + "\n"
                 + "Server: " + Arrays.toString(splittedStringIp));
-        
+
         byte[] sendData = null;
-        DNS_Question dnsQuestion = new DNS_Question(argAddress,argType);
-        sendData = merge(dnsHeader.getHeader(),dnsQuestion.getSendData());
-        
+        DNS_Question dnsQuestion = new DNS_Question(argAddress, argType);
+        sendData = merge(dnsHeader.getHeader(), dnsQuestion.getSendData());
         
         /*
          sending dns request
@@ -103,12 +99,7 @@ public class DnsClient {
 
         DatagramSocket socket = new DatagramSocket();
 
-
-        
-		
-		
         DatagramPacket dnsReqPacket = new DatagramPacket(sendData, sendData.length, server, argPort);
-
 
         long startTime = System.currentTimeMillis();
 
@@ -132,24 +123,20 @@ public class DnsClient {
         System.out.println("");
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
-
-
     }
-	public static byte[]merge(byte[]a, byte[]b){
-		
-		byte[]c = new byte[a.length+b.length];
-		int i;
-		for(i=0; i<a.length; i++){
-			c[i] = a[i];
-		}
 
-		for(int j=0; j<b.length; j++){
-			c[i++]=b[j];
-		}
-		return c;
-		  
-		     
-		       
-	}
+    public static byte[] merge(byte[] a, byte[] b) {
+
+        byte[] c = new byte[a.length + b.length];
+        int i;
+        for (i = 0; i < a.length; i++) {
+            c[i] = a[i];
+        }
+
+        for (int j = 0; j < b.length; j++) {
+            c[i++] = b[j];
+        }
+        return c;
+    }
 }
 
