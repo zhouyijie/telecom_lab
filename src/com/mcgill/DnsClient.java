@@ -43,7 +43,6 @@ public class DnsClient {
 
             }
         }
-        System.out.println("t:" + argType);
 
         String splittedStringIp[] = argIp.split("\\.");
         if (splittedStringIp.length != 4) {
