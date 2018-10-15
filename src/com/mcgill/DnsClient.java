@@ -8,7 +8,7 @@ import java.util.Random;
 public class DnsClient {
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         String argIp = "";
         String argAddress = "";
         String argType = "A";
@@ -168,6 +168,12 @@ public class DnsClient {
                 + countRetries + " retries (Max retries " + argMaxR
                 + ")) \n");
 
+        System.out.println("Received data: " + Arrays.toString(receiveData));
+        
+        dnsHeader.readHeader(receiveData);
+        
+        
+ 
     }
 
     public static byte[] merge(byte[] a, byte[] b) {
