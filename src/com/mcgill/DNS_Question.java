@@ -29,4 +29,9 @@ public class DNS_Question {
         }
         dataSent[count++] = (byte) 0;
     }
+
+	public static byte[] getQuestion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
