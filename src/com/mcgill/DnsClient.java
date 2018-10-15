@@ -16,15 +16,16 @@ public class DnsClient {
         int argMaxR = 3;
         int argTimeout = 5;
         long totalTime = 0;
+        boolean atUsed = false;
 
 
         int splittedIntIp[] = new int[4];
         byte[] address = new byte[4];
-        //short ID = new byte[2];
 
         for (int i = 0; i < args.length; i++) {
 
             if (args[i].charAt(0) == '@') {
+                atUsed = true;
                 argIp = args[i];
                 argIp = argIp.substring(1);
                 argAddress = args[i + 1];
@@ -33,6 +34,9 @@ public class DnsClient {
 
                 if (args[i].charAt(1) == 't') {
                     argTimeout = Integer.parseInt(args[i + 1]);
+                    if (argTimeout <= 0) {
+                        System.out.println("Error\tCannot have timeout less or equal to 0");
+                    }
 
                 } else if (args[i].charAt(1) == 'r') {
                     argMaxR = Integer.parseInt(args[i + 1]);
@@ -50,10 +54,15 @@ public class DnsClient {
         }
 
         String splittedStringIp[] = argIp.split("\\.");
-        if (splittedStringIp.length != 4) {
-            System.out.println("Invalid IP");
+        if (!atUsed) {
+            System.out.println("Error\tIP not specified make sure to add a '@' in front");
             System.exit(1);
         }
+        if (splittedStringIp.length != 4) {
+            System.out.println("Error\tInvalid IP: " + argIp + " is not a valid IP");
+            System.exit(1);
+        }
+
         splittedIntIp[0] = Integer.parseInt(splittedStringIp[0]);
         splittedIntIp[1] = Integer.parseInt(splittedStringIp[1]);
         splittedIntIp[2] = Integer.parseInt(splittedStringIp[2]);
@@ -134,11 +143,22 @@ public class DnsClient {
             } catch (SocketTimeoutException error) {
                 countRetries++;
                 if (countRetries >= argMaxR) {
-                    System.err.println("ERROR: Max timeout reached!");
+                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
                     return;
                 }
+            } catch (SocketException error) {
+                countRetries++;
+                System.err.println("ERROR\tSocket could not get sent");
+
+                if (countRetries >= argMaxR) {
+                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
+                    return;
+                }
+                return;
             }
+            socket.close();
             break;
+
 
         }
         System.out.println("sending request for " + argAddress + "\n"
