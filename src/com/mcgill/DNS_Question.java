@@ -52,4 +52,9 @@ public class DNS_Question {
         return Arrays.copyOf(dataSent, count);
 
     }
+
+	public static byte[] getQuestion() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

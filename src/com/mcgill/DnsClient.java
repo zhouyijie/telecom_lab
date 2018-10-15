@@ -9,6 +9,7 @@ import java.util.Random;
 
 public class DnsClient {
 
+
     public static void main(String[] args) throws IOException {
         String argIp = "";
         String argAddress = "";
@@ -58,15 +59,40 @@ public class DnsClient {
         address[1] = (byte) splittedIntIp[1];
         address[2] = (byte) splittedIntIp[2];
         address[3] = (byte) splittedIntIp[3];
-
+        
+        /*
+         * packet headers
+         * ID random
+         * QR 0 (query)
+         * OPCODE 0 (standard)
+         * AA 0 (only in response, authority(1) or not(0))
+         * TC 0 (not truncated)
+         * RD 1 (desire recursion)
+         * RA 0
+         * Z 0
+         * RCODE 0 (no error condition)
+         * QD 1
+         * AN 0 
+         * NS 0 (ignored)
+         * AR 0
+         */
+        //generate random ID
         Random randomID = new Random(Short.MAX_VALUE + 1);
-        //random.nextBytes(ID);
+        //random.nextBytes(ID)
+        
+        
+        DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short)randomID.nextInt(), (byte)0, (byte)0, (byte)0, (byte)0, (byte)1, (byte)0, (byte)0, (byte)0, (short)1, (short)0, (short)0, (short)0);
 
 
-        DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short) randomID.nextInt(), (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (short) 0, (short) 0, (short) 0, (short) 0);
+
+    
 
         System.out.println("sending request for " + argAddress + "\n"
                 + "Server: " + Arrays.toString(splittedStringIp));
+        
+        byte[] sendData = null;
+        DNS_Question dnsQuestion = new DNS_Question(argAddress,"","");
+        sendData = merge(dnsHeader.getHeader(),DNS_Question.getQuestion());
         
         /*
          sending dns request
@@ -76,8 +102,11 @@ public class DnsClient {
         DatagramSocket socket = new DatagramSocket();
 
 
-        byte[] sendData = new byte[]{1};
+        
+		
+		
         DatagramPacket dnsReqPacket = new DatagramPacket(sendData, sendData.length, server, argPort);
+
 
         long startTime = System.currentTimeMillis();
 
@@ -104,4 +133,21 @@ public class DnsClient {
 
 
     }
+	public static byte[]merge(byte[]a, byte[]b){
+		
+		byte[]c = new byte[a.length+b.length];
+		int i;
+		for(i=0; i<a.length; i++){
+			c[i] = a[i];
+		}
+
+		for(int j=0; j<b.length; j++){
+			c[i++]=b[j];
+		}
+		return c;
+		  
+		     
+		       
+	}
 }
+
