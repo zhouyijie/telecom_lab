@@ -17,6 +17,7 @@ public class DnsClient {
         int argTimeout = 5;
         long totalTime = 0;
         boolean atUsed = false;
+        byte[] receiveData = new byte[1024];
 
 
         int splittedIntIp[] = new int[4];
@@ -117,7 +118,7 @@ public class DnsClient {
         while (argMaxR > countRetries) {
 
             try {
-                byte[] receiveData = new byte[1024];
+                receiveData = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 
                 long startTime = System.currentTimeMillis();
@@ -169,11 +170,10 @@ public class DnsClient {
                 + ")) \n");
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
-        
+
         dnsHeader.readHeader(receiveData);
-        
-        
- 
+
+
     }
 
     public static byte[] merge(byte[] a, byte[] b) {
