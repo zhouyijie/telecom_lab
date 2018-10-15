@@ -1,9 +1,7 @@
 package com.mcgill;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.net.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -17,14 +15,17 @@ public class DnsClient {
         int argPort = 53;
         int argMaxR = 3;
         int argTimeout = 5;
+        long totalTime = 0;
+        boolean atUsed = false;
+
 
         int splittedIntIp[] = new int[4];
         byte[] address = new byte[4];
-        //short ID = new byte[2];
 
         for (int i = 0; i < args.length; i++) {
 
             if (args[i].charAt(0) == '@') {
+                atUsed = true;
                 argIp = args[i];
                 argIp = argIp.substring(1);
                 argAddress = args[i + 1];
@@ -33,6 +34,9 @@ public class DnsClient {
 
                 if (args[i].charAt(1) == 't') {
                     argTimeout = Integer.parseInt(args[i + 1]);
+                    if (argTimeout <= 0) {
+                        System.out.println("Error\tCannot have timeout less or equal to 0");
+                    }
 
                 } else if (args[i].charAt(1) == 'r') {
                     argMaxR = Integer.parseInt(args[i + 1]);
@@ -50,10 +54,15 @@ public class DnsClient {
         }
 
         String splittedStringIp[] = argIp.split("\\.");
-        if (splittedStringIp.length != 4) {
-            System.out.println("Invalid IP");
+        if (!atUsed) {
+            System.out.println("Error\tIP not specified make sure to add a '@' in front");
             System.exit(1);
         }
+        if (splittedStringIp.length != 4) {
+            System.out.println("Error\tInvalid IP: " + argIp + " is not a valid IP");
+            System.exit(1);
+        }
+
         splittedIntIp[0] = Integer.parseInt(splittedStringIp[0]);
         splittedIntIp[1] = Integer.parseInt(splittedStringIp[1]);
         splittedIntIp[2] = Integer.parseInt(splittedStringIp[2]);
@@ -85,8 +94,6 @@ public class DnsClient {
 
         DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short) randomID.nextInt(), (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 1, (byte) 0, (byte) 0, (byte) 0, (short) 1, (short) 0, (short) 0, (short) 0);
 
-        System.out.println("sending request for " + argAddress + "\n"
-                + "Server: " + Arrays.toString(splittedStringIp));
 
         byte[] sendData = null;
         DNS_Question dnsQuestion = new DNS_Question(argAddress, argType);
@@ -97,40 +104,76 @@ public class DnsClient {
          */
         InetAddress server = InetAddress.getByAddress(address);
 
+        int argTimeoutInMillis = argTimeout * 1000;
+
         DatagramSocket socket = new DatagramSocket();
+        socket.setSoTimeout(argTimeoutInMillis);
 
         DatagramPacket dnsReqPacket = new DatagramPacket(sendData, sendData.length, server, argPort);
 
-        long startTime = System.currentTimeMillis();
+        int countRetries = 0;
 
-        socket.send(dnsReqPacket);
+        //keep trying until the max retries value is reached
+        while (argMaxR > countRetries) {
 
-        /*
-         * waiting for dns response
-         *
-         */
+            try {
+                byte[] receiveData = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
+
+                long startTime = System.currentTimeMillis();
+
+                socket.send(dnsReqPacket);
+
+                /*
+                 * waiting for dns response
+                 *
+                 */
+
+                socket.receive(packet);
+
+                long endTime = System.currentTimeMillis();
+
+                totalTime = endTime - startTime;
+
+                System.out.println("total time:" + totalTime + "ms");
+
+                System.out.println("");
+
+                System.out.println("Received data: " + Arrays.toString(receiveData));
+            } catch (SocketTimeoutException error) {
+                countRetries++;
+                if (countRetries >= argMaxR) {
+                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
+                    return;
+                }
+            } catch (SocketException error) {
+                countRetries++;
+                System.err.println("ERROR\tSocket could not get sent");
+
+                if (countRetries >= argMaxR) {
+                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
+                    return;
+                }
+                return;
+            }
+            socket.close();
+            break;
 
 
-        byte[] receiveData = new byte[1024];
-        DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
-
-        socket.receive(packet);
-
-        long endTime = System.currentTimeMillis();
-
-        long totalTime = endTime - startTime;
-        
-        System.out.println("total time:"+totalTime+"ms");
-
-        System.out.println("");
+        }
+        System.out.println("sending request for " + argAddress + "\n"
+                + "Server: " + Arrays.toString(splittedStringIp)
+                + " Request type: " + argType + "\n"
+                + "Response received after " + (totalTime) + " milliseconds ("
+                + countRetries + " retries (Max retries " + argMaxR
+                + ")) \n");
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
         
         dnsHeader.readHeader(receiveData);
         
         
-        
-        
+ 
     }
 
     public static byte[] merge(byte[] a, byte[] b) {
