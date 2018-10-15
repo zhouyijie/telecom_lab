@@ -1,5 +1,7 @@
 package com.mcgill;
 
+import java.util.Arrays;
+
 public class DNS_Question {
 
     private String address;
@@ -12,12 +14,12 @@ public class DNS_Question {
         this.address = address;
         this.qType = qType;
         this.qClass = qClass;
-        parseQName();
+        parseSendData();
     }
 
-    public void parseQName() {
+    public byte[] parseSendData() {
 
-
+        //QName start
         String s[] = address.split("\\.");
 
         for (int i = 0; i < s.length; i++) {
@@ -28,5 +30,26 @@ public class DNS_Question {
             }
         }
         dataSent[count++] = (byte) 0;
+        dataSent[count++] = (byte) 0;
+        //QName End
+        //starting QType
+
+        if (qType.equals("MX")) {
+            dataSent[count++] = (byte) 15;
+
+        } else if (qType.equals("NS")) {
+            dataSent[count++] = (byte) 2;
+        } else {
+            dataSent[count++] = (byte) 1;
+
+        }
+        //QType end
+
+        //QClass start
+        dataSent[count++] = (byte) 0;
+        dataSent[count++] = (byte) 1;
+
+        return Arrays.copyOf(dataSent, count);
+
     }
 }
