@@ -22,8 +22,7 @@ public class DNS_PacketHeaders {
 	private short ARCOUNT;
 	private byte[] packetHeader;
 
-	private byte[] dnsHeader;
-	public void packetHeaders(short id, byte qr, byte opCode, byte aa, byte tc, byte rd, byte ra, byte z, byte rCode, short qdCount, short anCount, short nsCount, short arCount){
+	public DNS_PacketHeaders(short id, byte qr, byte opCode, byte aa, byte tc, byte rd, byte ra, byte z, byte rCode, short qdCount, short anCount, short nsCount, short arCount){
 		ID = id;
 		QR = qr;
 		OPCODE = opCode;
@@ -53,6 +52,13 @@ public class DNS_PacketHeaders {
 		packetHeader[11] = (byte) NSCOUNT;
 		this.packetHeader = packetHeader;
 		
+		
+	}
+	public void readHeader(byte[] header){
+		
+	}
+	public byte[] getHeader(){
+		return packetHeader;
 		
 	}
 }

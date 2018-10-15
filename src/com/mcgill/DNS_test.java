@@ -17,8 +17,8 @@ public class DNS_test {
 		short NSCOUNT = 24;
 		//DNS_PacketHeaders.packetHeaders dns = new DNS_PacketHeaders.packetHeaders();
 		
-		DNS_PacketHeaders test = new DNS_PacketHeaders();
-		test.packetHeaders(ID,QR,OPCODE,AA,TC,RD,RA,Z,RCODE,QDCOUNT,ANCOUNT,NSCOUNT,ARCOUNT);
+		//DNS_PacketHeaders test = new DNS_PacketHeaders();
+		//test.packetHeaders(ID,QR,OPCODE,AA,TC,RD,RA,Z,RCODE,QDCOUNT,ANCOUNT,NSCOUNT,ARCOUNT);
 
 		//test.packetHeaders(id, qr, opCode, aa, tc, rd, ra, z, rCode, qdCount, anCount, nsCount, arCount);
 		

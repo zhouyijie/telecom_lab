@@ -9,7 +9,7 @@ public class DnsClient {
         String argAddress = "";
         int splittedIntIp[] = new int[4];
         byte[] address = new byte[4];
-        byte[] ID = new byte[2];
+        //short ID = new byte[2];
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].charAt(0) == '@') {
@@ -34,11 +34,16 @@ public class DnsClient {
         address[2] = (byte) splittedIntIp[2];
         address[3] = (byte) splittedIntIp[3];
 
-        Random random = new Random();
-        random.nextBytes(ID);
+        Random randomID = new Random(Short.MAX_VALUE + 1);
+        //random.nextBytes(ID);
+        
+        
+        DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short)randomID.nextInt(), (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (byte)0, (short)0, (short)0, (short)0, (short)0);
 
         System.out.println("sending request for "  +argAddress+ "\n"
                 + "Server: " + Arrays.toString(splittedStringIp));
+        
+        
 
 
     }
