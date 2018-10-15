@@ -14,10 +14,9 @@ public class DNS_Question {
         this.address = address;
         this.qType = qType;
         this.qClass = qClass;
-        parseSendData();
     }
 
-    public byte[] parseSendData() {
+    public byte[] getSendData() {
 
         //QName start
         String s[] = address.split("\\.");
@@ -52,9 +51,4 @@ public class DNS_Question {
         return Arrays.copyOf(dataSent, count);
 
     }
-
-	public static byte[] getQuestion() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
