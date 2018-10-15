@@ -119,10 +119,13 @@ public class DnsClient {
         long endTime = System.currentTimeMillis();
 
         long totalTime = endTime - startTime;
+        
+        System.out.println("total time:"+totalTime+"ms");
 
         System.out.println("");
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
+        
     }
 
     public static byte[] merge(byte[] a, byte[] b) {
