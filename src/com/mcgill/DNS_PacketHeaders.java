@@ -112,6 +112,8 @@ public class DNS_PacketHeaders {
             case 5:
                 System.out.println("refused: The name server refuses to perform the requested operation for policy reasons");
         }
+        System.out.println("***Answer Section "+"( "+this.ANCOUNT+" records)***");
+        
     }
 
     private byte binToByte(String substring) {
@@ -142,5 +144,10 @@ public class DNS_PacketHeaders {
         return binOut;
 
     }
+
+	public byte getAA() {
+		// TODO Auto-generated method stub
+		return this.AA;
+	}
 
 }

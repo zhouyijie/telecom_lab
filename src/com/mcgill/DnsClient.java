@@ -99,7 +99,7 @@ public class DnsClient {
         byte[] sendData = null;
         DNS_Question dnsQuestion = new DNS_Question(argAddress, argType);
         sendData = merge(dnsHeader.getHeader(), dnsQuestion.getSendData());
-        
+        //System.out.println("senddata: "+Arrays.toString(sendData));
         /*
          sending dns request
          */
@@ -173,8 +173,17 @@ public class DnsClient {
 
         int nameBitLength = dnsQuestion.getNameBitLength();
         DNS_Answer answer = new DNS_Answer();
-        answer.answer(receiveData, nameBitLength);
         dnsHeader.readHeader(receiveData);
+        answer.answer(receiveData, nameBitLength);
+        
+        byte auth = dnsHeader.getAA();
+        if(auth == 1){
+        	System.out.print("  auth  ");
+        }else{
+        	System.out.print("  nonauth  ");
+        }
+        
+        
 
 
     }
