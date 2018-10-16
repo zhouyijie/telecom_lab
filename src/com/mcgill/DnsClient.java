@@ -182,6 +182,12 @@ public class DnsClient {
         }else{
         	System.out.print("  nonauth  ");
         }
+        System.out.println("");
+        short additional = dnsHeader.getAR();
+        System.out.println("***Additional Section "+"( "+additional+" records)***");
+        if(additional == 0){
+        	System.out.println("NOT FOUND");
+        }
         
         
 

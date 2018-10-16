@@ -150,4 +150,9 @@ public class DNS_PacketHeaders {
 		return this.AA;
 	}
 
+	public short getAR() {
+		// TODO Auto-generated method stub
+		return this.ARCOUNT;
+	}
+
 }
