@@ -171,6 +171,9 @@ public class DnsClient {
 
         System.out.println("Received data: " + Arrays.toString(receiveData));
 
+        int nameBitLength = dnsQuestion.getNameBitLength();
+        DNS_Answer answer = new DNS_Answer();
+        answer.answer(receiveData, nameBitLength);
         dnsHeader.readHeader(receiveData);
 
 

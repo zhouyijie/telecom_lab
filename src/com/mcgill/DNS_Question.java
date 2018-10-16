@@ -9,6 +9,8 @@ public class DNS_Question {
     private String qClass;
     byte[] dataSent = new byte[1024];
     int count = 0;
+    private int nameBitLength = 0;
+
 
     public DNS_Question(String address, String qType) {
         this.address = address;
@@ -17,6 +19,8 @@ public class DNS_Question {
     }
 
     public byte[] getSendData() {
+
+        int nameBitLength = 0;
 
         //QName start
         String splittedAddress[] = address.split("\\.");
@@ -29,9 +33,12 @@ public class DNS_Question {
             }
         }
         dataSent[count++] = (byte) 0;
-        dataSent[count++] = (byte) 0;
+
+
+        setNameBitLength(count);
         //QName End
         //starting QType
+        dataSent[count++] = (byte) 0;
 
         if (qType.equals("MX")) {
             dataSent[count++] = (byte) 15;
@@ -49,5 +56,13 @@ public class DNS_Question {
         dataSent[count++] = (byte) 1;
 
         return Arrays.copyOf(dataSent, count);
+    }
+
+    public int getNameBitLength() {
+        return nameBitLength;
+    }
+
+    public void setNameBitLength(int nameBitLength) {
+        this.nameBitLength = nameBitLength;
     }
 }
