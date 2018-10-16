@@ -4,14 +4,19 @@ import java.util.Arrays;
 
 public class DNS_Answer {
 
-    public DNS_Answer() {
+    private int startBitsSize = 0;
+
+	public DNS_Answer() {
 
     }
 
     public void answer(byte[] recievedData, int nameSize) {
 
-
-        int startBitsSize = 12 + nameSize +4;
+    	if(startBitsSize == 0){
+    		//reading first response
+    	
+    		startBitsSize  = 12 + nameSize +4;
+    	}
         
         if (recievedData[startBitsSize] == -64){
         	System.out.println("we found a pointer");
@@ -19,12 +24,12 @@ public class DNS_Answer {
         	int pointer = recievedData[startBitsSize++];
         	startBitsSize++;
         }else{
-        	/*
+        	System.out.println("curser is at the wrong place");
         	while(recievedData[startBitsSize] != -64){
         		startBitsSize++;
         		
         	}
-        	*/
+        	
         }
 
         //TYPE
@@ -91,6 +96,7 @@ public class DNS_Answer {
         	rData[c] = recievedData[i];
         	c++;
         }
+        startBitsSize = i;
         
 
         /*
@@ -163,7 +169,25 @@ public class DNS_Answer {
     		//NS alias ttl auth
     		System.out.print("NS: alias: ");
     		for(int j=0;j<rdlength;j++){
-    			if (rData[j]<30){
+    			if(rData[j] == -64){
+    				j++;
+    				int ptr;
+    				if(rData[j]<0){
+    					ptr = rData[j]+256;
+    				}
+    				else{
+    					ptr = rData[j];
+    				}
+    				System.out.print("(jump to pointer "+ptr+" )");
+    				while(recievedData[ptr]!=0){
+    					if (recievedData[ptr]<30){
+    	        			System.out.print(".");
+    	        		}else{
+    	        			System.out.print(Character.toString((char) recievedData[ptr]));
+    	        		}
+    					ptr++;
+    				}
+    			}else if (rData[j]<30){
         			System.out.print(".");
         		}else{
         			System.out.print(Character.toString((char) rData[j]));
@@ -177,7 +201,25 @@ public class DNS_Answer {
         	short pref = (short)(rData[0]<<8|rData[1]);
         	System.out.print(pref+" alias: ");
         	for (int j =2;j<rdlength;j++){
-        		if (rData[j]<30){
+        		if(rData[j] == -64){
+    				j++;
+    				int ptr;
+    				if(rData[j]<0){
+    					ptr = rData[j]+256;
+    				}
+    				else{
+    					ptr = rData[j];
+    				}
+    				System.out.print("(jump to pointer "+ptr+" )");
+    				while(recievedData[ptr]!=0){
+    					if (recievedData[ptr]<30){
+    	        			System.out.print(".");
+    	        		}else{
+    	        			System.out.print(Character.toString((char) recievedData[ptr]));
+    	        		}
+    					ptr++;
+    				}
+    			}else if (rData[j]<30){
         			System.out.print(".");
         		}else{
         			System.out.print(Character.toString((char) rData[j]));
@@ -191,7 +233,25 @@ public class DNS_Answer {
     		//CNAME alias ttl auth
         	System.out.print("CNAME: alias: ");
     		for(int j=0;j<rdlength;j++){
-    			if (rData[j]<30){
+    			if(rData[j] == -64){
+    				j++;
+    				int ptr;
+    				if(rData[j]<0){
+    					ptr = rData[j]+256;
+    				}
+    				else{
+    					ptr = rData[j];
+    				}
+    				System.out.print("(jump to pointer "+ptr+" )");
+    				while(recievedData[ptr]!=0){
+    					if (recievedData[ptr]<30){
+    	        			System.out.print(".");
+    	        		}else{
+    	        			System.out.print(Character.toString((char) recievedData[ptr]));
+    	        		}
+    					ptr++;
+    				}
+    			}else if (rData[j]<30){
         			System.out.print(".");
         		}else{
         			System.out.print(Character.toString((char) rData[j]));

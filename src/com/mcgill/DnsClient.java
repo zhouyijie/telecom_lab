@@ -174,15 +174,24 @@ public class DnsClient {
         int nameBitLength = dnsQuestion.getNameBitLength();
         DNS_Answer answer = new DNS_Answer();
         dnsHeader.readHeader(receiveData);
-        answer.answer(receiveData, nameBitLength);
         
-        byte auth = dnsHeader.getAA();
-        if(auth == 1){
-        	System.out.print("  auth  ");
-        }else{
-        	System.out.print("  nonauth  ");
+        short numResponse = dnsHeader.getAN();
+        for(int x=0;x<numResponse;x++){
+        	
+        
+        
+        	answer.answer(receiveData, nameBitLength);
+        
+        	byte auth = dnsHeader.getAA();
+        	if(auth == 1){
+        		System.out.print("  auth  ");
+        	}else{
+        		System.out.print("  nonauth  ");
+        	}
+        	System.out.println("");
         }
-        System.out.println("");
+        
+        
         short additional = dnsHeader.getAR();
         System.out.println("***Additional Section "+"( "+additional+" records)***");
         if(additional == 0){

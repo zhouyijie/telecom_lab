@@ -155,4 +155,9 @@ public class DNS_PacketHeaders {
 		return this.ARCOUNT;
 	}
 
+	public short getAN() {
+		// TODO Auto-generated method stub
+		return this.ANCOUNT;
+	}
+
 }
