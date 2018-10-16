@@ -87,7 +87,7 @@ public class DNS_PacketHeaders {
 
         this.ARCOUNT = (short) ((header[10] << 8) | header[11]);
 
-        if (RA == 1) {
+        if (RA == 0) {
 
             System.out.println("server does not support recursive queries.");
         }
