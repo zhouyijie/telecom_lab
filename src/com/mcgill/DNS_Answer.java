@@ -163,7 +163,11 @@ public class DNS_Answer {
     		//NS alias ttl auth
     		System.out.print("NS: alias: ");
     		for(int j=0;j<rdlength;j++){
-    			System.out.print(Character.toString((char) rData[j]));
+    			if (rData[j]<30){
+        			System.out.print(".");
+        		}else{
+        			System.out.print(Character.toString((char) rData[j]));
+        		}
     		}
     		System.out.print(" ttl: "+ttl+" ");
         }else if (type == 15){
@@ -185,7 +189,15 @@ public class DNS_Answer {
     		
     		
     		//CNAME alias ttl auth
-        	
+        	System.out.print("CNAME: alias: ");
+    		for(int j=0;j<rdlength;j++){
+    			if (rData[j]<30){
+        			System.out.print(".");
+        		}else{
+        			System.out.print(Character.toString((char) rData[j]));
+        		}
+    		}
+    		System.out.print(" ttl: "+ttl+" ");
         	
         }else{
         	System.out.println("invalid type: "+ type);
