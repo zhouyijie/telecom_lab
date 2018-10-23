@@ -2,24 +2,8 @@ package com.mcgill;
 
 public class DNS_PacketHeaders {
     // private variables
-
-    private short ID;
-
-    private byte QR;
-
-    private byte OPCODE;
-
-    private byte AA;
-
-    private byte TC, RD, RA, Z, RCODE;
-
-    private short QDCOUNT;
-
-    private short ANCOUNT;
-
-    private short NSCOUNT;
-
-    private short ARCOUNT;
+    private byte QR, OPCODE, AA, TC, RD, RA, Z, RCODE;
+    private short ID, QDCOUNT, ANCOUNT, NSCOUNT, ARCOUNT;
     private byte[] packetHeader;
 
     public DNS_PacketHeaders(short id, byte qr, byte opCode, byte aa, byte tc, byte rd, byte ra, byte z, byte rCode,
@@ -37,6 +21,7 @@ public class DNS_PacketHeaders {
         ANCOUNT = anCount;
         ARCOUNT = arCount;
         NSCOUNT = nsCount;
+
         byte[] packetHeader = new byte[12];
         // big endian for id address
         packetHeader[0] = (byte) (ID >>> 8);
@@ -52,7 +37,6 @@ public class DNS_PacketHeaders {
         packetHeader[10] = (byte) (NSCOUNT >>> 8);
         packetHeader[11] = (byte) NSCOUNT;
         this.packetHeader = packetHeader;
-
     }
 
     public void readHeader(byte[] header) throws Exception {
@@ -64,27 +48,16 @@ public class DNS_PacketHeaders {
         String flag2 = byteToBin(header[3]);
 
         this.QR = binToByte(flag1.substring(0, 1));
-
         this.OPCODE = binToByte(flag1.substring(1, 5));
-
         this.AA = binToByte(flag1.substring(5, 6));
-
         this.TC = binToByte(flag1.substring(6, 7));
-
         this.RD = binToByte(flag1.substring(7, 8));
-
         this.RA = binToByte(flag2.substring(0, 1));
-
         this.Z = binToByte(flag2.substring(1, 4));
-
         this.RCODE = binToByte(flag2.substring(4, 8));
-
         this.QDCOUNT = (short) ((header[4] << 8) | header[5]);
-
         this.ANCOUNT = (short) ((header[6] << 8) | header[7]);
-
         this.NSCOUNT = (short) ((header[8] << 8) | header[9]);
-
         this.ARCOUNT = (short) ((header[10] << 8) | header[11]);
 
         if (RA == 0) {
@@ -93,7 +66,6 @@ public class DNS_PacketHeaders {
         }
 
         switch (RCODE) {
-
             case 0:
                 break;// zero error condition
 
@@ -112,8 +84,8 @@ public class DNS_PacketHeaders {
             case 5:
                 System.out.println("refused: The name server refuses to perform the requested operation for policy reasons");
         }
-        System.out.println("***Answer Section "+"( "+this.ANCOUNT+" records)***");
-        
+        System.out.println("***Answer Section " + "( " + this.ANCOUNT + " records)***");
+
     }
 
     private byte binToByte(String substring) {
@@ -142,22 +114,18 @@ public class DNS_PacketHeaders {
         }
 
         return binOut;
-
     }
 
-	public byte getAA() {
-		// TODO Auto-generated method stub
-		return this.AA;
-	}
+    public byte getAA() {
+        return this.AA;
+    }
 
-	public short getAR() {
-		// TODO Auto-generated method stub
-		return this.ARCOUNT;
-	}
+    public short getAR() {
+        return this.ARCOUNT;
+    }
 
-	public short getAN() {
-		// TODO Auto-generated method stub
-		return this.ANCOUNT;
-	}
+    public short getAN() {
+        return this.ANCOUNT;
+    }
 
 }

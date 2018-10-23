@@ -6,23 +6,20 @@ public class DNS_Question {
 
     private String address;
     private String qType;
-    private String qClass;
     byte[] dataSent = new byte[1024];
     int count = 0;
     private int nameBitLength = 0;
 
-
     public DNS_Question(String address, String qType) {
         this.address = address;
         this.qType = qType;
-        this.qClass = qClass;
     }
 
     public byte[] getSendData() {
 
         int nameBitLength = 0;
 
-        //QName start
+        //QName start // tp
         String splittedAddress[] = address.split("\\.");
 
         for (int i = 0; i < splittedAddress.length; i++) {

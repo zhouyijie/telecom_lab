@@ -1,6 +1,5 @@
 package com.mcgill;
 
-import java.io.IOException;
 import java.net.*;
 import java.util.Arrays;
 import java.util.Random;
@@ -18,7 +17,6 @@ public class DnsClient {
         long totalTime = 0;
         boolean atUsed = false;
         byte[] receiveData = new byte[1024];
-
 
         int splittedIntIp[] = new int[4];
         byte[] address = new byte[4];
@@ -95,11 +93,9 @@ public class DnsClient {
 
         DNS_PacketHeaders dnsHeader = new DNS_PacketHeaders((short) randomID.nextInt(), (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 1, (byte) 0, (byte) 0, (byte) 0, (short) 1, (short) 0, (short) 0, (short) 0);
 
-
         byte[] sendData = null;
         DNS_Question dnsQuestion = new DNS_Question(argAddress, argType);
         sendData = merge(dnsHeader.getHeader(), dnsQuestion.getSendData());
-        //System.out.println("senddata: "+Arrays.toString(sendData));
         /*
          sending dns request
          */
@@ -124,12 +120,10 @@ public class DnsClient {
                 long startTime = System.currentTimeMillis();
 
                 socket.send(dnsReqPacket);
-
                 /*
                  * waiting for dns response
                  *
                  */
-
                 socket.receive(packet);
 
                 long endTime = System.currentTimeMillis();
@@ -137,9 +131,7 @@ public class DnsClient {
                 totalTime = endTime - startTime;
 
                 System.out.println("total time:" + totalTime + "ms");
-
                 System.out.println("");
-
                 System.out.println("Received data: " + Arrays.toString(receiveData));
             } catch (SocketTimeoutException error) {
                 countRetries++;
@@ -160,7 +152,6 @@ public class DnsClient {
             socket.close();
             break;
 
-
         }
         System.out.println("sending request for " + argAddress + "\n"
                 + "Server: " + Arrays.toString(splittedStringIp)
@@ -174,33 +165,26 @@ public class DnsClient {
         int nameBitLength = dnsQuestion.getNameBitLength();
         DNS_Answer answer = new DNS_Answer();
         dnsHeader.readHeader(receiveData);
-        
+
         short numResponse = dnsHeader.getAN();
-        for(int x=0;x<numResponse;x++){
-        	
-        
-        
-        	answer.answer(receiveData, nameBitLength);
-        
-        	byte auth = dnsHeader.getAA();
-        	if(auth == 1){
-        		System.out.print("  auth  ");
-        	}else{
-        		System.out.print("  nonauth  ");
-        	}
-        	System.out.println("");
+        for (int x = 0; x < numResponse; x++) {
+
+            answer.answer(receiveData, nameBitLength);
+
+            byte auth = dnsHeader.getAA();
+            if (auth == 1) {
+                System.out.print("  auth  ");
+            } else {
+                System.out.print("  nonauth  ");
+            }
+            System.out.println("");
         }
-        
-        
+
         short additional = dnsHeader.getAR();
-        System.out.println("***Additional Section "+"( "+additional+" records)***");
-        if(additional == 0){
-        	System.out.println("NOT FOUND");
+        System.out.println("***Additional Section " + "( " + additional + " records)***");
+        if (additional == 0) {
+            System.out.println("NOT FOUND");
         }
-        
-        
-
-
     }
 
     public static byte[] merge(byte[] a, byte[] b) {
