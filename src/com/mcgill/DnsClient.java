@@ -137,8 +137,8 @@ public class DnsClient {
                 countRetries++;
                 if (countRetries >= argMaxR) {
                     System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
-                    return;
                 }
+                continue;
             } catch (SocketException error) {
                 countRetries++;
                 System.err.println("ERROR\tSocket could not get sent");
@@ -147,7 +147,7 @@ public class DnsClient {
                     System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
                     return;
                 }
-                return;
+                continue;
             }
             socket.close();
             break;
