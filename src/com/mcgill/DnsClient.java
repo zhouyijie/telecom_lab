@@ -111,7 +111,11 @@ public class DnsClient {
         int countRetries = 0;
 
         //keep trying until the max retries value is reached
-        while (argMaxR > countRetries) {
+        while (argMaxR >= countRetries) {
+            if (countRetries == argMaxR) {
+                System.err.println("ERROR\tMaximum number of retries " + argMaxR + " exceeded");
+                return;
+            }
 
             try {
                 receiveData = new byte[1024];
@@ -132,35 +136,27 @@ public class DnsClient {
 
                 System.out.println("total time:" + totalTime + "ms");
                 System.out.println("");
-                System.out.println("Received data: " + Arrays.toString(receiveData));
+                //System.out.println("Received data: " + Arrays.toString(receiveData));
             } catch (SocketTimeoutException error) {
                 countRetries++;
-                if (countRetries >= argMaxR) {
-                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
-                }
                 continue;
             } catch (SocketException error) {
                 countRetries++;
                 System.err.println("ERROR\tSocket could not get sent");
-
-                if (countRetries >= argMaxR) {
-                    System.err.println("ERROR\tMaximum number of retries" + argMaxR + " exceeded");
-                    return;
-                }
                 continue;
             }
             socket.close();
             break;
 
         }
-        System.out.println("sending request for " + argAddress + "\n"
-                + "Server: " + Arrays.toString(splittedStringIp)
-                + " Request type: " + argType + "\n"
+        System.out.println("DnsClient sending request for " + argAddress + "\n"
+                + "Server: " + Arrays.toString(splittedStringIp) + "\n"
+                + "Request type: " + argType + "\n"
                 + "Response received after " + (totalTime) + " milliseconds ("
                 + countRetries + " retries (Max retries " + argMaxR
                 + ")) \n");
 
-        System.out.println("Received data: " + Arrays.toString(receiveData));
+        //System.out.println("Received data: " + Arrays.toString(receiveData));
 
         int nameBitLength = dnsQuestion.getNameBitLength();
         DNS_Answer answer = new DNS_Answer();
@@ -173,9 +169,9 @@ public class DnsClient {
 
             byte auth = dnsHeader.getAA();
             if (auth == 1) {
-                System.out.print("  auth  ");
+                System.out.print("auth");
             } else {
-                System.out.print("  nonauth  ");
+                System.out.print("nonauth");
             }
             System.out.println("");
         }

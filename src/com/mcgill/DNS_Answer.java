@@ -1,7 +1,5 @@
 package com.mcgill;
 
-import java.util.Arrays;
-
 public class DNS_Answer {
 
     private int startBitsSize = 0;
@@ -19,12 +17,12 @@ public class DNS_Answer {
         }
 
         if (recievedData[startBitsSize] == -64) {
-            System.out.println("we found a pointer");
+            //System.out.println("we found a pointer");
             //limitation: max index num is 277, and check for one pointer only
             int pointer = recievedData[startBitsSize++];
             startBitsSize++;
         } else {
-            System.out.println("curser is at the wrong place");
+            //System.out.println("curser is at the wrong place");
             while (recievedData[startBitsSize] != -64) {
                 startBitsSize++;
 
@@ -33,8 +31,6 @@ public class DNS_Answer {
         }
 
         //TYPE
-        //System.out.println("TYPE");
-
         byte[] typeByte = new byte[2];
 
         int i = startBitsSize;
@@ -50,7 +46,6 @@ public class DNS_Answer {
 
 
         //CLASS
-        //System.out.println("CLASS");
 
         byte[] classByte = new byte[2];
         startBitsSize = i;
@@ -66,7 +61,6 @@ public class DNS_Answer {
 
 
         //TTL
-        //System.out.println("TTL");
         byte[] ttlByte = new byte[4];
         startBitsSize = i;
 
@@ -97,77 +91,38 @@ public class DNS_Answer {
             c++;
         }
         startBitsSize = i;
-        
 
-        /*
-        if (typeByte[0] == 0 && typeByte[1] == 15) { //MX type
-            System.out.println(" MX TYPE preference");
-
-            //RDATA
-            byte[] rDataByte = new byte[2];
-            startBitsSize = i;
-
-            c = 0;
-            for (i = startBitsSize; i < startBitsSize + 2; i++) {
-                System.out.println(recievedData[i]);
-                rDataByte[c] = recievedData[i];
-                c++;
-            }
-
-
-        } else if (typeByte[0] == 0 && typeByte[1] == 2) { //NS type
-            //RDATA
-            System.out.println("TYPE NS");
-
-            byte[] rDataByte = new byte[nameSize];
-            startBitsSize = i;
-
-            c = 0;
-            for (i = startBitsSize; i < startBitsSize + nameSize; i++) {
-                System.out.println(recievedData[i]);
-                rDataByte[c] = recievedData[i];
-                c++;
-            }
-
-
-        } else if (typeByte[0] == 0 && typeByte[1] == 1) { //A type
-            //RDATA
-            System.out.println("TYPE A");
-
-            byte[] rDataByte = new byte[4];
-            startBitsSize = i;
-
-            c = 0;
-            for (i = startBitsSize; i < startBitsSize + 4; i++) {
-                System.out.println(recievedData[i]);
-                rDataByte[c] = recievedData[i];
-                c++;
-            }
-
-        } else {   //CNAME
-
-        }
-        */
-
-//rdata
+        //rdata
         if (type == 1) {
 
             //A ip ttl auth
-            System.out.print("IP: ip adress ");
+            System.out.print("IP\t");
             for (int j = 0; j < 4; j++) {
                 if (rData[j] < 0) {
                     int ip = 256 + rData[j];
-                    System.out.print(ip + ".");
+
+                    if (j == 3) {
+                        System.out.print(ip);
+                    } else {
+                        System.out.print(ip + ".");
+                    }
+
                 } else {
-                    System.out.print(rData[j] + ".");
+                    if (j == 3) {
+                        System.out.print(rData[j]);
+                    } else {
+                        System.out.print(rData[j] + ".");
+                    }
                 }
             }
-            System.out.print(" ttl: " + ttl + " ");
+
+            System.out.print("\t" + ttl + "\t");
         } else if (type == 2) {
 
 
             //NS alias ttl auth
-            System.out.print("NS: alias: ");
+            System.out.print("NS\t");
+            int count = 0;
             for (int j = 0; j < rdlength; j++) {
                 if (rData[j] == -64) {
                     j++;
@@ -177,7 +132,7 @@ public class DNS_Answer {
                     } else {
                         ptr = rData[j];
                     }
-                    System.out.print("(jump to pointer " + ptr + " )");
+                    // System.out.print("(jump to pointer " + ptr + " )");
                     while (recievedData[ptr] != 0) {
                         if (recievedData[ptr] < 30) {
                             System.out.print(".");
@@ -187,18 +142,22 @@ public class DNS_Answer {
                         ptr++;
                     }
                 } else if (rData[j] < 30) {
-                    System.out.print(".");
+                    if (count > 0) {
+                        System.out.print(".");
+                    }
+                    count++;
                 } else {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
-            System.out.print(" ttl: " + ttl + " ");
+            System.out.print("\t" + ttl + "\t");
         } else if (type == 15) {
 
             //MX alias pref ttl auth
-            System.out.print("MX: pref: ");
+            System.out.print("MX\t");
             short pref = (short) (rData[0] << 8 | rData[1]);
-            System.out.print(pref + " alias: ");
+            System.out.print(pref + "\t");
+            int count = 0;
             for (int j = 2; j < rdlength; j++) {
                 if (rData[j] == -64) {
                     j++;
@@ -208,7 +167,7 @@ public class DNS_Answer {
                     } else {
                         ptr = rData[j];
                     }
-                    System.out.print("(jump to pointer " + ptr + " )");
+                    //System.out.print("(jump to pointer " + ptr + " )");
                     while (recievedData[ptr] != 0) {
                         if (recievedData[ptr] < 30) {
                             System.out.print(".");
@@ -218,18 +177,22 @@ public class DNS_Answer {
                         ptr++;
                     }
                 } else if (rData[j] < 30) {
-                    System.out.print(".");
+                    if (count > 0) {
+                        System.out.print(".");
+                    }
+                    count++;
                 } else {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
-            System.out.print(" ttl: " + ttl + " ");
+            System.out.print("\t" + ttl + "\t");
 
         } else if (type == 5) {
 
 
             //CNAME alias ttl auth
-            System.out.print("CNAME: alias: ");
+            System.out.print("CNAME\t");
+            int count = 0;
             for (int j = 0; j < rdlength; j++) {
                 if (rData[j] == -64) {
                     j++;
@@ -239,7 +202,7 @@ public class DNS_Answer {
                     } else {
                         ptr = rData[j];
                     }
-                    System.out.print("(jump to pointer " + ptr + " )");
+                    //System.out.print("(jump to pointer " + ptr + " )");
                     while (recievedData[ptr] != 0) {
                         if (recievedData[ptr] < 30) {
                             System.out.print(".");
@@ -249,12 +212,15 @@ public class DNS_Answer {
                         ptr++;
                     }
                 } else if (rData[j] < 30) {
-                    System.out.print(".");
+                    if (count > 0) {
+                        System.out.print(".");
+                    }
+                    count++;
                 } else {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
-            System.out.print(" ttl: " + ttl + " ");
+            System.out.print("\t" + ttl + "\t");
 
         } else {
             System.out.println("invalid type: " + type);
