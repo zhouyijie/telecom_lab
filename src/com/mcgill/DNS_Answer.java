@@ -241,7 +241,7 @@ public class DNS_Answer {
             System.out.print("\t" + ttl + "\t");
 
         } else {
-            System.out.println("invalid type: " + type);
+            System.out.print("invalid type: " + type);
         }
 
 

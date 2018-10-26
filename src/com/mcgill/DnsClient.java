@@ -180,6 +180,13 @@ public class DnsClient {
         System.out.println("***Additional Section " + "( " + additional + " records)***");
         if (additional == 0) {
             System.out.println("NOT FOUND");
+        }else{
+        	for(int y = 0;y<additional;y++){
+        		
+        		answer.answer(nameBitLength);
+        		System.out.println("");
+        	}
+        	
         }
     }
 
