@@ -3,22 +3,26 @@ package com.mcgill;
 public class DNS_Answer {
 
     private int startBitsSize = 0;
+    private byte[] recievedData;
+    //private int previousEnd = 0;
 
-    public DNS_Answer() {
-
+    public DNS_Answer(byte[] data) {
+    	recievedData = data;
     }
 
-    public void answer(byte[] recievedData, int nameSize) {
+    public void answer(int nameSize) {
 
         if (startBitsSize == 0) {
             //reading first response
 
             startBitsSize = 12 + nameSize + 4;
         }
+        //previousEnd = startBitsSize;
 
         if (recievedData[startBitsSize] == -64) {
             //System.out.println("we found a pointer");
             //limitation: max index num is 277, and check for one pointer only
+        	recievedData[startBitsSize] = 0;
             int pointer = recievedData[startBitsSize++];
             startBitsSize++;
         } else {
@@ -27,6 +31,7 @@ public class DNS_Answer {
                 startBitsSize++;
 
             }
+            recievedData[startBitsSize] = 0;
 
         }
 
@@ -122,6 +127,8 @@ public class DNS_Answer {
 
             //NS alias ttl auth
             System.out.print("NS\t");
+            readLabels(0,rData,rdlength);
+            /*
             int count = 0;
             for (int j = 0; j < rdlength; j++) {
                 if (rData[j] == -64) {
@@ -150,6 +157,7 @@ public class DNS_Answer {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
+            */
             System.out.print("\t" + ttl + "\t");
         } else if (type == 15) {
 
@@ -157,6 +165,11 @@ public class DNS_Answer {
             System.out.print("MX\t");
             short pref = (short) (rData[0] << 8 | rData[1]);
             System.out.print(pref + "\t");
+            
+            readLabels(2,rData,rdlength);
+            
+            /*
+            
             int count = 0;
             for (int j = 2; j < rdlength; j++) {
                 if (rData[j] == -64) {
@@ -168,7 +181,7 @@ public class DNS_Answer {
                         ptr = rData[j];
                     }
                     //System.out.print("(jump to pointer " + ptr + " )");
-                    while (recievedData[ptr] != 0) {
+                    while (recievedData[ptr] != 0 && recievedData[ptr] != -64) {
                         if (recievedData[ptr] < 30) {
                             System.out.print(".");
                         } else {
@@ -185,6 +198,7 @@ public class DNS_Answer {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
+            */
             System.out.print("\t" + ttl + "\t");
 
         } else if (type == 5) {
@@ -192,6 +206,9 @@ public class DNS_Answer {
 
             //CNAME alias ttl auth
             System.out.print("CNAME\t");
+            
+            readLabels(0,rData,rdlength);
+            /*
             int count = 0;
             for (int j = 0; j < rdlength; j++) {
                 if (rData[j] == -64) {
@@ -220,6 +237,7 @@ public class DNS_Answer {
                     System.out.print(Character.toString((char) rData[j]));
                 }
             }
+            */
             System.out.print("\t" + ttl + "\t");
 
         } else {
@@ -233,5 +251,42 @@ public class DNS_Answer {
 
 
     }
+
+	private void readLabels(int rd, byte[] data, short length ) {
+		
+        while(rd < length){
+        	if(data[rd] == -64){
+        		rd++;
+                int ptr;
+                if (data[rd] < 0) {
+                    ptr = data[rd] + 256;
+                } else {
+                    ptr = data[rd];
+                }
+                int ptrLength;
+                ptrLength = ptr;
+          
+                while(recievedData[ptrLength] != 0){
+                	ptrLength++;
+                	
+                }
+                
+                readLabels(ptr,recievedData,(short)ptrLength);
+        		rd++;
+        		if(rd<length){
+        			System.out.print(".");
+        		}
+        	}else{
+        		for(int j = 0;j<data[rd];j++){
+        			System.out.print(Character.toString((char) data[rd+1+j]));
+        		}
+        		rd = rd + data[rd];
+        		rd++;
+        		if(rd<length && data[rd] != 0){
+        			System.out.print(".");
+        		}
+        	}
+        }
+	}
 
 }

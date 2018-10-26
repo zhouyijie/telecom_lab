@@ -136,7 +136,7 @@ public class DnsClient {
 
                 System.out.println("total time:" + totalTime + "ms");
                 System.out.println("");
-                //System.out.println("Received data: " + Arrays.toString(receiveData));
+                System.out.println("Received data: " + Arrays.toString(receiveData));
             } catch (SocketTimeoutException error) {
                 countRetries++;
                 continue;
@@ -159,13 +159,13 @@ public class DnsClient {
         //System.out.println("Received data: " + Arrays.toString(receiveData));
 
         int nameBitLength = dnsQuestion.getNameBitLength();
-        DNS_Answer answer = new DNS_Answer();
+        DNS_Answer answer = new DNS_Answer(receiveData);
         dnsHeader.readHeader(receiveData);
 
         short numResponse = dnsHeader.getAN();
         for (int x = 0; x < numResponse; x++) {
 
-            answer.answer(receiveData, nameBitLength);
+            answer.answer(nameBitLength);
 
             byte auth = dnsHeader.getAA();
             if (auth == 1) {
