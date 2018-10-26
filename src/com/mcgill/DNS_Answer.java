@@ -128,36 +128,6 @@ public class DNS_Answer {
             //NS alias ttl auth
             System.out.print("NS\t");
             readLabels(0,rData,rdlength);
-            /*
-            int count = 0;
-            for (int j = 0; j < rdlength; j++) {
-                if (rData[j] == -64) {
-                    j++;
-                    int ptr;
-                    if (rData[j] < 0) {
-                        ptr = rData[j] + 256;
-                    } else {
-                        ptr = rData[j];
-                    }
-                    // System.out.print("(jump to pointer " + ptr + " )");
-                    while (recievedData[ptr] != 0) {
-                        if (recievedData[ptr] < 30) {
-                            System.out.print(".");
-                        } else {
-                            System.out.print(Character.toString((char) recievedData[ptr]));
-                        }
-                        ptr++;
-                    }
-                } else if (rData[j] < 30) {
-                    if (count > 0) {
-                        System.out.print(".");
-                    }
-                    count++;
-                } else {
-                    System.out.print(Character.toString((char) rData[j]));
-                }
-            }
-            */
             System.out.print("\t" + ttl + "\t");
         } else if (type == 15) {
 
@@ -168,37 +138,6 @@ public class DNS_Answer {
             
             readLabels(2,rData,rdlength);
             
-            /*
-            
-            int count = 0;
-            for (int j = 2; j < rdlength; j++) {
-                if (rData[j] == -64) {
-                    j++;
-                    int ptr;
-                    if (rData[j] < 0) {
-                        ptr = rData[j] + 256;
-                    } else {
-                        ptr = rData[j];
-                    }
-                    //System.out.print("(jump to pointer " + ptr + " )");
-                    while (recievedData[ptr] != 0 && recievedData[ptr] != -64) {
-                        if (recievedData[ptr] < 30) {
-                            System.out.print(".");
-                        } else {
-                            System.out.print(Character.toString((char) recievedData[ptr]));
-                        }
-                        ptr++;
-                    }
-                } else if (rData[j] < 30) {
-                    if (count > 0) {
-                        System.out.print(".");
-                    }
-                    count++;
-                } else {
-                    System.out.print(Character.toString((char) rData[j]));
-                }
-            }
-            */
             System.out.print("\t" + ttl + "\t");
 
         } else if (type == 5) {
@@ -208,36 +147,6 @@ public class DNS_Answer {
             System.out.print("CNAME\t");
             
             readLabels(0,rData,rdlength);
-            /*
-            int count = 0;
-            for (int j = 0; j < rdlength; j++) {
-                if (rData[j] == -64) {
-                    j++;
-                    int ptr;
-                    if (rData[j] < 0) {
-                        ptr = rData[j] + 256;
-                    } else {
-                        ptr = rData[j];
-                    }
-                    //System.out.print("(jump to pointer " + ptr + " )");
-                    while (recievedData[ptr] != 0) {
-                        if (recievedData[ptr] < 30) {
-                            System.out.print(".");
-                        } else {
-                            System.out.print(Character.toString((char) recievedData[ptr]));
-                        }
-                        ptr++;
-                    }
-                } else if (rData[j] < 30) {
-                    if (count > 0) {
-                        System.out.print(".");
-                    }
-                    count++;
-                } else {
-                    System.out.print(Character.toString((char) rData[j]));
-                }
-            }
-            */
             System.out.print("\t" + ttl + "\t");
 
         } else {
@@ -248,8 +157,6 @@ public class DNS_Answer {
         if (classtype != 1) {
             System.out.println("different classtype encountered: " + classtype);
         }
-
-
     }
 
 	private void readLabels(int rd, byte[] data, short length ) {

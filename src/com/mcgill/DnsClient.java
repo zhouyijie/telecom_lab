@@ -136,9 +136,9 @@ public class DnsClient {
 
                 System.out.println("total time:" + totalTime + "ms");
                 System.out.println("");
-                System.out.println("Received data: " + Arrays.toString(receiveData));
             } catch (SocketTimeoutException error) {
                 countRetries++;
+                System.err.println("ERROR\tTimeout of " + argTimeout + " second(s) exceeded, retrying...");
                 continue;
             } catch (SocketException error) {
                 countRetries++;
