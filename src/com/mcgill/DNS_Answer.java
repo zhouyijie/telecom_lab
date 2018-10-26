@@ -75,7 +75,7 @@ public class DNS_Answer {
             ttlByte[c] = recievedData[i];
             c++;
         }
-        short ttl = (short) (ttlByte[0] << 24 | ttlByte[1] << 16 | ttlByte[2] << 8 | ttlByte[3] & 0xff);
+        long ttl = (long) (ttlByte[0] << 24 & 0xff000000 | ttlByte[1] << 16 & 0xff0000 | ttlByte[2] << 8 & 0xff00 | ttlByte[3] & 0xff);
 
         //rdlength
         byte[] lengthByte = new byte[2];
@@ -241,7 +241,7 @@ public class DNS_Answer {
             System.out.print("\t" + ttl + "\t");
 
         } else {
-            System.out.print("invalid type: " + type);
+            System.out.print("ERROR\t"+"unexpected response type: " + type);
         }
 
 
